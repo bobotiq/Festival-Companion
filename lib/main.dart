@@ -79,10 +79,26 @@ class MapScreen extends StatelessWidget {
 }
 
 class ScheduleScreen extends StatelessWidget {
+  final List<Map<String, String>> events = [
+    {"time": "12:00", "title": "Opening Ceremony", "stage": "Main Stage"},
+    {"time": "13:30", "title": "Rock Band", "stage": "Stage A"},
+    {"time": "15:00", "title": "DJ Set", "stage": "Dance Tent"},
+    {"time": "16:30", "title": "Food Tasting", "stage": "Food Court"},
+    {"time": "18:00", "title": "Headliner", "stage": "Main Stage"},
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Event Schedule Coming Soon', style: TextStyle(fontSize: 20)),
+    return ListView.builder(
+      itemCount: events.length,
+      itemBuilder: (context, index) {
+        final event = events[index];
+        return ListTile(
+          leading: Icon(Icons.event),
+          title: Text(event["title"] ?? ""),
+          subtitle: Text('${event["time"]} - ${event["stage"]}'),
+        );
+      },
     );
   }
 }
