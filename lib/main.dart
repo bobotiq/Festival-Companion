@@ -43,7 +43,7 @@ class FestivalCompanionApp extends StatelessWidget {
           backgroundColor: Colors.white,
           indicatorColor: primaryColor.withAlpha(32),
           labelTextStyle: WidgetStatePropertyAll(
-            TextStyle(fontWeight: FontWeight.w600),
+            TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
           ),
           iconTheme: WidgetStatePropertyAll(IconThemeData(color: primaryColor)),
         ),
