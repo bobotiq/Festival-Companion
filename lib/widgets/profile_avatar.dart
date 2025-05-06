@@ -2,19 +2,39 @@ import 'package:flutter/material.dart';
 
 class ProfileAvatar extends StatelessWidget {
   final String imageUrl;
-  const ProfileAvatar({required this.imageUrl, super.key});
+  final bool isOnline;
+  final double radius;
+
+  const ProfileAvatar({
+    required this.imageUrl,
+    this.isOnline = false,
+    this.radius = 24,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 26,
-      backgroundColor: Colors.grey[200],
-      backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-      child:
-          imageUrl.isEmpty
-              ? Icon(Icons.person, size: 28, color: Colors.grey[600])
-              : null,
-      // For advanced error handling, use cached_network_image
+    return Stack(
+      children: [
+        CircleAvatar(
+          radius: radius,
+          backgroundImage: NetworkImage(imageUrl),
+          child: imageUrl.isEmpty ? const Icon(Icons.person) : null,
+        ),
+        if (isOnline)
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

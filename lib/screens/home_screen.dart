@@ -3,72 +3,51 @@ import '../widgets/feature_card.dart';
 
 class HomeScreen extends StatelessWidget {
   final List<Map<String, dynamic>> features = [
-    {'icon': Icons.map_rounded, 'label': 'Festival Map'},
-    {'icon': Icons.event_rounded, 'label': 'Event Schedule'},
-    {'icon': Icons.people_rounded, 'label': 'Find Friends'},
-    {'icon': Icons.notifications_rounded, 'label': 'Notifications'},
+    {
+      'icon': Icons.map,
+      'label': 'Festival Map',
+      'route': '/map',
+    },
+    {
+      'icon': Icons.schedule,
+      'label': 'My Schedule',
+      'route': '/schedule',
+    },
+    // Add more features...
   ];
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 6,
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.music_note_rounded,
-                    size: 64,
-                    color: theme.colorScheme.primary,
-                    semanticLabel: 'Festival music note',
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Welcome to Festival Companion!',
-                    style: theme.textTheme.titleLarge?.copyWith(fontSize: 26),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Your personal guide to an unforgettable festival experience.',
-                    style: theme.textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 200,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Image.asset(
+                'assets/festival_header.jpg',
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          SizedBox(height: 32),
-          Text('Explore Features', style: theme.textTheme.titleLarge),
-          SizedBox(height: 20),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: features.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: MediaQuery.of(context).size.width > 500 ? 4 : 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-              childAspectRatio: 1.1,
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => FeatureCard(
+                  icon: features[index]['icon'],
+                  label: features[index]['label'],
+                  onTap: () => Navigator.pushNamed(context, features[index]['route']),
+                ),
+                childCount: features.length,
+              ),
             ),
-            itemBuilder: (context, index) {
-              final feature = features[index];
-              return FeatureCard(
-                key: ValueKey(feature['label']),
-                icon: feature['icon'],
-                label: feature['label'],
-              );
-            },
           ),
         ],
       ),

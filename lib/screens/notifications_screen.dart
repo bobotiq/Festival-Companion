@@ -1,60 +1,112 @@
 import 'package:flutter/material.dart';
+import '../models/notification.dart';
 
-class NotificationsScreen extends StatelessWidget {
-  final List<Map<String, String>> notifications = [
-    {"icon": "favorite", "msg": "Samira liked your post."},
-    {"icon": "comment", "msg": "Jasper commented: Awesome!"},
-    {"icon": "follow", "msg": "Lotte started following you."},
-    {"icon": "event", "msg": "Main Stage event starts soon!"},
+class NotificationsScreen extends StatefulWidget {
+  @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  final List<AppNotification> _notifications = [
+    AppNotification(
+      id: '1',
+      type: NotificationType.eventReminder,
+      title: 'Main Stage starts in 30 minutes',
+      isRead: false,
+    ),
+    AppNotification(
+      id: '2',
+      type: NotificationType.friendActivity,
+      title: 'Alex is now at the Food Court',
+      isRead: false,
+    ),
+    AppNotification(
+      id: '3',
+      type: NotificationType.system,
+      title: 'Welcome to the festival!',
+      isRead: true,
+    ),
   ];
 
-  IconData _iconFor(String name) {
-    switch (name) {
-      case "favorite":
-        return Icons.favorite_rounded;
-      case "comment":
-        return Icons.comment_rounded;
-      case "follow":
-        return Icons.person_add_rounded;
-      case "event":
-      default:
-        return Icons.event_rounded;
-    }
+  void _markAllAsRead() {
+    setState(() {
+      for (var n in _notifications) {
+        n.isRead = true;
+      }
+    });
+  }
+
+  void _dismissNotification(int index) {
+    setState(() {
+      _notifications.removeAt(index);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    if (notifications.isEmpty) {
-      return Center(
-        child: Text('No notifications yet.', style: theme.textTheme.bodyLarge),
-      );
-    }
-    return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-      itemCount: notifications.length,
-      itemBuilder: (context, idx) {
-        final n = notifications[idx];
-        return Card(
-          key: ValueKey(n["msg"]),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.mark_email_read),
+            tooltip: "Mark all as read",
+            onPressed: _markAllAsRead,
           ),
-          elevation: 3,
-          margin: EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: theme.colorScheme.primary.withAlpha(38),
-              child: Icon(
-                _iconFor(n["icon"]!),
-                color: theme.colorScheme.primary,
-                semanticLabel: n["icon"],
+        ],
+      ),
+      body: _notifications.isEmpty
+          ? Center(child: Text('No notifications'))
+          : ListView.builder(
+              itemCount: _notifications.length,
+              itemBuilder: (context, index) => _NotificationItem(
+                notification: _notifications[index],
+                onDismiss: () => _dismissNotification(index),
               ),
             ),
-            title: Text(n["msg"]!, style: theme.textTheme.bodyLarge),
+    );
+  }
+}
+
+class _NotificationItem extends StatelessWidget {
+  final AppNotification notification;
+  final VoidCallback onDismiss;
+
+  const _NotificationItem({
+    required this.notification,
+    required this.onDismiss,
+  });
+
+  Icon _getNotificationIcon() {
+    switch (notification.type) {
+      case NotificationType.friendActivity:
+        return const Icon(Icons.people, color: Colors.blue);
+      case NotificationType.eventReminder:
+        return const Icon(Icons.event, color: Colors.orange);
+      case NotificationType.system:
+        return const Icon(Icons.info, color: Colors.grey);
+    }
+    // No default needed; all enum cases are covered.
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: Key(notification.id),
+      background: Container(color: Colors.red),
+      onDismissed: (_) => onDismiss(),
+      child: ListTile(
+        leading: _getNotificationIcon(),
+        title: Text(
+          notification.title,
+          style: TextStyle(
+            fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
           ),
-        );
-      },
+        ),
+        trailing: notification.isRead
+            ? null
+            : Icon(Icons.circle, color: Theme.of(context).colorScheme.secondary, size: 12),
+      ),
     );
   }
 }

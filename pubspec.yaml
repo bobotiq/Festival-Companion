@@ -33,6 +33,8 @@ dependencies:
   google_maps_flutter: ^2.12.1
   geolocator: ^14.0.0
   shared_preferences: ^2.2.2
+  intl: ^0.18.1  # For date formatting
+  cached_network_image: ^3.3.0  # Better image handling
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
