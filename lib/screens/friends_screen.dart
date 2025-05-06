@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/profile_avatar.dart';
 
 class FriendsScreen extends StatelessWidget {
-  // List of friends with their names and avatar URLs
   final List<Map<String, String>> friends = [
     {
       "name": "Alex",
@@ -28,13 +27,19 @@ class FriendsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // Access the app's theme
+    final theme = Theme.of(context);
+    if (friends.isEmpty) {
+      return Center(
+        child: Text('No friends found.', style: theme.textTheme.bodyLarge),
+      );
+    }
     return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 18, horizontal: 12),
       itemCount: friends.length,
       itemBuilder: (context, idx) {
         final friend = friends[idx];
         return Card(
+          key: ValueKey(friend["name"]),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -43,7 +48,7 @@ class FriendsScreen extends StatelessWidget {
           child: ListTile(
             leading: ProfileAvatar(
               imageUrl: friend["avatar"]!,
-            ), // Avatar widget
+            ),
             title: Text(friend["name"]!, style: theme.textTheme.titleLarge),
             subtitle: Text(
               "At the festival",
@@ -52,9 +57,9 @@ class FriendsScreen extends StatelessWidget {
             trailing: Icon(
               Icons.location_on_rounded,
               color: theme.colorScheme.secondary,
+              semanticLabel: 'Friend location',
             ),
             onTap: () {
-              // Show a snackbar when a friend is tapped
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(

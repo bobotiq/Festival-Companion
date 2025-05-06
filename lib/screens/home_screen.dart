@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/feature_card.dart';
 
 class HomeScreen extends StatelessWidget {
-  // List of features with icons and labels
   final List<Map<String, dynamic>> features = [
     {'icon': Icons.map_rounded, 'label': 'Festival Map'},
     {'icon': Icons.event_rounded, 'label': 'Event Schedule'},
@@ -12,13 +11,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // Access the app's theme
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Welcome card
           Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -32,6 +30,7 @@ class HomeScreen extends StatelessWidget {
                     Icons.music_note_rounded,
                     size: 64,
                     color: theme.colorScheme.primary,
+                    semanticLabel: 'Festival music note',
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -52,7 +51,6 @@ class HomeScreen extends StatelessWidget {
           SizedBox(height: 32),
           Text('Explore Features', style: theme.textTheme.titleLarge),
           SizedBox(height: 20),
-          // Grid of feature cards
           GridView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
@@ -66,6 +64,7 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final feature = features[index];
               return FeatureCard(
+                key: ValueKey(feature['label']),
                 icon: feature['icon'],
                 label: feature['label'],
               );

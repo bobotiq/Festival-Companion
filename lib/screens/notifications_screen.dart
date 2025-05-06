@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatelessWidget {
-  // List of notifications with icons and messages
   final List<Map<String, String>> notifications = [
     {"icon": "favorite", "msg": "Samira liked your post."},
     {"icon": "comment", "msg": "Jasper commented: Awesome!"},
@@ -9,7 +8,6 @@ class NotificationsScreen extends StatelessWidget {
     {"icon": "event", "msg": "Main Stage event starts soon!"},
   ];
 
-  // Helper method to map icon names to IconData
   IconData _iconFor(String name) {
     switch (name) {
       case "favorite":
@@ -26,13 +24,19 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // Access the app's theme
+    final theme = Theme.of(context);
+    if (notifications.isEmpty) {
+      return Center(
+        child: Text('No notifications yet.', style: theme.textTheme.bodyLarge),
+      );
+    }
     return ListView.builder(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       itemCount: notifications.length,
       itemBuilder: (context, idx) {
         final n = notifications[idx];
         return Card(
+          key: ValueKey(n["msg"]),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -44,6 +48,7 @@ class NotificationsScreen extends StatelessWidget {
               child: Icon(
                 _iconFor(n["icon"]!),
                 color: theme.colorScheme.primary,
+                semanticLabel: n["icon"],
               ),
             ),
             title: Text(n["msg"]!, style: theme.textTheme.bodyLarge),
