@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/feature_card.dart';
 
 class HomeScreen extends StatelessWidget {
+  // List of features with icons and labels
   final List<Map<String, dynamic>> features = [
     {'icon': Icons.map_rounded, 'label': 'Festival Map'},
     {'icon': Icons.event_rounded, 'label': 'Event Schedule'},
@@ -11,20 +12,27 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = Theme.of(context); // Access the app's theme
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Welcome card
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             elevation: 6,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 32, horizontal: 24),
               child: Column(
                 children: [
-                  Icon(Icons.music_note_rounded, size: 64, color: theme.colorScheme.primary),
+                  Icon(
+                    Icons.music_note_rounded,
+                    size: 64,
+                    color: theme.colorScheme.primary,
+                  ),
                   SizedBox(height: 20),
                   Text(
                     'Welcome to Festival Companion!',
@@ -44,6 +52,7 @@ class HomeScreen extends StatelessWidget {
           SizedBox(height: 32),
           Text('Explore Features', style: theme.textTheme.titleLarge),
           SizedBox(height: 20),
+          // Grid of feature cards
           GridView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),

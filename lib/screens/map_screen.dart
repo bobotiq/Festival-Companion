@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MapScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = Theme.of(context); // Access the app's theme
     return Center(
       child: Card(
         margin: EdgeInsets.all(24),

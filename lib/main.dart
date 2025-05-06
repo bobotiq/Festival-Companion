@@ -10,6 +10,7 @@ void main() => runApp(FestivalCompanionApp());
 class FestivalCompanionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Define theme colors
     final primaryColor = Color(0xFF4A90E2);
     final secondaryColor = Color(0xFF50E3C2);
     final surfaceColor = Color(0xFFF5F7FA);
@@ -17,6 +18,7 @@ class FestivalCompanionApp extends StatelessWidget {
     return MaterialApp(
       title: 'Festival Companion',
       theme: ThemeData(
+        // Color scheme
         colorScheme: ColorScheme.light(
           primary: primaryColor,
           onPrimary: Colors.white,
@@ -27,6 +29,8 @@ class FestivalCompanionApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: surfaceColor,
         fontFamily: 'Roboto',
+
+        // AppBar theme
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.white,
           elevation: 2,
@@ -39,6 +43,8 @@ class FestivalCompanionApp extends StatelessWidget {
           ),
           iconTheme: IconThemeData(color: primaryColor),
         ),
+
+        // Navigation bar theme
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: Colors.white,
           indicatorColor: primaryColor.withAlpha(32),
@@ -47,6 +53,8 @@ class FestivalCompanionApp extends StatelessWidget {
           ),
           iconTheme: WidgetStatePropertyAll(IconThemeData(color: primaryColor)),
         ),
+
+        // Card theme
         cardTheme: CardTheme(
           elevation: 3,
           shape: RoundedRectangleBorder(
@@ -55,6 +63,8 @@ class FestivalCompanionApp extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           color: Colors.white,
         ),
+
+        // Text theme
         textTheme: TextTheme(
           titleLarge: TextStyle(
             fontSize: 20,
@@ -82,8 +92,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // Track the selected tab index
 
+  // List of screens for navigation
   static final List<Widget> _screens = [
     HomeScreen(),
     MapScreen(),
@@ -92,13 +103,14 @@ class _MainScreenState extends State<MainScreen> {
     NotificationsScreen(),
   ];
 
+  // Handle navigation bar item tap
   void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Festival Companion')),
-      body: _screens[_selectedIndex],
+      body: _screens[_selectedIndex], // Display the selected screen
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
