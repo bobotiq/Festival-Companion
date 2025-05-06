@@ -1,33 +1,53 @@
-#Festival Companion
-A modern, high-quality mobile app prototype designed to enhance the festival experience.
-Features include navigation, event schedules, friend finder, and notifications - all wrapped in a clean, vibrant UI.
+# Festival Companion
 
-Features
-Home screen with feature highlights
+Festival Companion is a mobile application designed as a high-quality proof-of-concept for enhancing the festival experience. The app features a simple and intuitive UI, offering functionality such as a festival map placeholder, a schedule list, a friends list, and a notifications feed.
 
-Festival map placeholder
+## Getting Started
 
-Event schedule list
+These instructions will help you get a copy of the project up and running on your local machine for development and testing purposes.
 
-Friends list with avatars
+### Prerequisites
 
-Notifications feed
+- Flutter SDK (latest stable version)
+- An IDE like Android Studio or VS Code
+- A device emulator (Android Studio/XCode) or physical device for testing
 
-Project Structure
-All source code is in the lib/ folder:
+### Installing
 
-lib/
-├── main.dart               # App entry point and navigation
-├── screens/                # Screen widgets
-├── widgets/                # Reusable UI components
+Clone the repository:
 
-Getting Started
+```bash
+git clone https://github.com/bobotiq/festival_companion.git
+```
 
-Clone the repo:
-git clone https://github.com/yourusername/festival_companion.git
+Navigate into the project directory:
 
-Install dependencies:
+```bash
+cd festival_companion
+```
+
+Get the Flutter packages:
+
+```bash
 flutter pub get
+```
 
 Run the app:
+
+```bash
 flutter run
+```
+
+### Built With
+Flutter – UI toolkit for building natively compiled applications
+
+Dart – Programming language used with Flutter
+
+### Project Structure
+
+```bash
+lib/
+├── main.dart               # Entry point and routing
+├── screens/                # Individual screens for app pages
+├── widgets/                # Reusable components
+```
