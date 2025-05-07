@@ -1,8 +1,20 @@
+/// FeatureCard is a reusable widget for displaying feature shortcuts on the home screen dashboard.
+/// Features:
+/// - Icon and label display
+/// - Tap handling for navigation
+/// - Consistent styling with app theme
+library;
+
 import 'package:flutter/material.dart';
 
 class FeatureCard extends StatelessWidget {
+  /// Icon to display for the feature
   final IconData icon;
+
+  /// Text label describing the feature
   final String label;
+
+  /// Optional callback for tap handling
   final VoidCallback? onTap;
 
   const FeatureCard({
@@ -14,31 +26,27 @@ class FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 4,
+      elevation: 2,
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap ??
-            () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('$label feature coming soon!')),
-              );
-            },
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Tooltip(
-                message: label,
-                child: Icon(icon, size: 40, color: theme.colorScheme.primary),
+              // Feature icon with themed color
+              Icon(
+                icon,
+                size: 32,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
+              // Feature label
               Text(
                 label,
-                style: theme.textTheme.labelLarge,
+                style: Theme.of(context).textTheme.titleSmall,
                 textAlign: TextAlign.center,
               ),
             ],

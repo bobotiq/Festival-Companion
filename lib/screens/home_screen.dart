@@ -1,5 +1,15 @@
+/// HomeScreen serves as the main dashboard for the festival app.
+/// Features:
+/// - Personalized welcome message
+/// - Countdown to next event
+/// - Quick access to key features (Map, Friends, Notifications, Weather)
+/// - Festival information hub
+/// - Latest announcements and weather updates
+library;
+
 import 'dart:async';
 import 'package:flutter/material.dart';
+//import '../widgets/feature_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,33 +19,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Example data (replace with real data or state management as needed)
-  final String userName = 'Bob';
-  final String festivalName = 'Sunshine Music Fest 2025';
-  final String nextEventTitle = 'Main Stage: DJ Aurora';
-  final DateTime nextEventTime = DateTime(2025, 6, 15, 18, 30);
-  final String weather = 'Sunny, 23°C';
-  final int unreadNotifications = 3;
-  final int friendsOnline = 2;
+  /// User information - would normally be fetched from user profile
+  final String userName = "Boris";
+  final String festivalName = "Summer Music Fest 2025";
 
+  final String nextEventTitle = "Headliner Performance";
+
+  final int friendsOnline = 5;
+
+  final int unreadNotifications = 3;
+
+  final String weather = "Sunny, 25°C";
+
+  /// Countdown timer state
   late Timer _timer;
-  Duration _countdown = Duration();
+  Duration _countdown = const Duration(hours: 0, minutes: 30);
 
   @override
   void initState() {
     super.initState();
-    _updateCountdown();
-    _timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) => _updateCountdown(),
-    );
-  }
-
-  void _updateCountdown() {
-    final now = DateTime.now();
-    final diff = nextEventTime.difference(now);
-    setState(() {
-      _countdown = diff.isNegative ? Duration.zero : diff;
+    // Periodic timer to update countdown
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        if (_countdown.inSeconds > 0) {
+          _countdown = _countdown - const Duration(seconds: 1);
+        }
+      });
     });
   }
 
@@ -45,13 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  /// Format duration for display
   String _formatDuration(Duration d) {
-    if (d.inSeconds <= 0) return "Now!";
     final hours = d.inHours;
-    final minutes = d.inMinutes % 60;
-    final seconds = d.inSeconds % 60;
+    final minutes = d.inMinutes.remainder(60);
+    final seconds = d.inSeconds.remainder(60);
+
     if (hours > 0) {
-      return "$hours h $minutes m $seconds s";
+      return "$hours h $minutes m";
     } else if (minutes > 0) {
       return "$minutes m $seconds s";
     } else {
@@ -64,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
+          // Large app bar with festival welcome message
           SliverAppBar.large(
             floating: true,
             expandedHeight: 160,
@@ -86,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          // Main content area
           SliverPadding(
             padding: const EdgeInsets.all(16),
             sliver: SliverList(
@@ -103,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Next event card with countdown
   Widget _buildNextEventSection(BuildContext context) {
     return Card(
       elevation: 4,
@@ -127,6 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
+            // Countdown display with animation
             Text(
               'Starts in ${_formatDuration(_countdown)}',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -139,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Quick access grid for main app features
   Widget _buildQuickActionsGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
@@ -147,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisSpacing: 16,
       crossAxisSpacing: 16,
       children: [
+        // TODO: Implement the navigation for these cards
         _buildActionCard(
           context,
           Icons.map,
@@ -173,6 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Individual action card for quick access grid
   Widget _buildActionCard(
     BuildContext context,
     IconData icon,
@@ -180,7 +197,9 @@ class _HomeScreenState extends State<HomeScreen> {
     String subtitle,
     VoidCallback onTap,
   ) {
+    // Card with icon and text
     return Card(
+      elevation: 2,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -209,6 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Festival information section with important details
   Widget _buildInfoSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,6 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
+        // List of important festival information
         Card(
           child: Column(
             children: [
@@ -230,38 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 title: const Text('Festival Hours'),
                 subtitle: const Text('12:00 PM - 11:00 PM'),
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                onTap: () => Navigator.pushNamed(context, '/schedule'),
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.local_parking,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: const Text('Parking Information'),
-                subtitle: const Text('Available spots: 250+'),
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                onTap: () {},
-              ),
-              const Divider(),
-              ListTile(
-                leading: Icon(
-                  Icons.food_bank,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: const Text('Food & Drinks'),
-                subtitle: const Text('20+ vendors available'),
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
               const Divider(),
@@ -270,12 +260,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icons.medical_services,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text('Emergency Services'),
-                subtitle: const Text('First aid locations & contact info'),
-                trailing: Icon(
-                  Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                title: const Text('First Aid Locations'),
+                subtitle: const Text('Main Entrance & Food Court'),
+                trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
             ],

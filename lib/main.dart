@@ -1,22 +1,30 @@
+/// Main entry point for the Festival Companion app.
+/// Sets up the app theme, navigation, and core screens.
+library;
+
 import 'package:flutter/material.dart';
+// Screen imports for main navigation
 import 'screens/home_screen.dart';
 import 'screens/map_screen.dart';
 import 'screens/schedule_screen.dart';
 import 'screens/friends_screen.dart';
 import 'screens/notifications_screen.dart';
 
+/// Entry point of the application
 void main() => runApp(FestivalCompanionApp());
 
+/// Root widget that configures the app-wide theme and appearance
 class FestivalCompanionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Festival Companion',
+      // Configure Material 3 theme with custom color scheme
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: Color(0xFF6200EE), // Deep purple for primary
-          secondary: Color(0xFF03DAC6), // Teal for secondary
-          surface: Color(0xFFF8F9FA), // Light gray surface
+          primary: Color(0xFF6200EE), // Main brand color
+          secondary: Color(0xFF03DAC6), // Accent color
+          surface: Color(0xFFF8F9FA), // Card and surface backgrounds
           background: Color(0xFFFFFFFF), // Pure white background
           error: Color(0xFFB00020), // Standard error color
           onPrimary: Colors.white,
@@ -25,7 +33,6 @@ class FestivalCompanionApp extends StatelessWidget {
           onBackground: Color(0xFF1F1F1F),
           onError: Colors.white,
         ),
-        // Modern text styles
         textTheme: TextTheme(
           headlineLarge: TextStyle(
             fontSize: 32,
@@ -44,7 +51,6 @@ class FestivalCompanionApp extends StatelessWidget {
             letterSpacing: 0.1,
           ),
         ),
-        // Modern card styling
         cardTheme: CardTheme(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -52,7 +58,6 @@ class FestivalCompanionApp extends StatelessWidget {
           ),
           margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
-        // Modern input decoration
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.grey[50],
@@ -70,14 +75,17 @@ class FestivalCompanionApp extends StatelessWidget {
   }
 }
 
+/// Main navigation container that manages the bottom navigation bar and screen switching
 class MainScreen extends StatefulWidget {
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+  // Track currently selected navigation item
   int _selectedIndex = 0;
 
+  // List of main app screens corresponding to bottom navigation items
   static final List<Widget> _screens = [
     HomeScreen(),
     MapScreen(),
@@ -86,16 +94,19 @@ class _MainScreenState extends State<MainScreen> {
     NotificationsScreen(),
   ];
 
+  // Handle bottom navigation item selection
   void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Use IndexedStack to preserve screen state when switching tabs
       body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
         destinations: const [
+          // Navigation items with icons and labels
           NavigationDestination(icon: Icon(Icons.home_rounded), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.map_rounded), label: 'Map'),
           NavigationDestination(
