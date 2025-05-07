@@ -8,7 +8,8 @@ class ScheduleScreen extends StatefulWidget {
   State<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProviderStateMixin {
+class _ScheduleScreenState extends State<ScheduleScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<Event> _allEvents = [];
   final List<Event> _favoriteEvents = [];
@@ -67,10 +68,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
         title: const Text('Schedule'),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'All Events'),
-            Tab(text: 'My Schedule'),
-          ],
+          tabs: const [Tab(text: 'All Events'), Tab(text: 'My Schedule')],
         ),
       ),
       body: TabBarView(
@@ -85,7 +83,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
 
   Widget _buildEventList(List<Event> events) {
     if (events.isEmpty) {
-      return Center(child: Text('No events found', style: Theme.of(context).textTheme.bodyLarge));
+      return Center(
+        child: Text(
+          'No events found',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
     }
     return ListView.builder(
       itemCount: events.length,
@@ -94,48 +97,159 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   }
 
   Widget _buildEventTile(Event event) {
-    return ListTile(
-      leading: IconButton(
-        icon: Icon(event.isFavorite ? Icons.star : Icons.star_border),
-        color: Theme.of(context).colorScheme.secondary,
-        onPressed: () => _toggleFavorite(event),
-      ),
-      title: Text(event.title),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(event.stage),
-          Text(
-            '${DateFormat('HH:mm').format(event.startTime)} - ${DateFormat('HH:mm').format(event.endTime)}',
-            style: Theme.of(context).textTheme.bodySmall,
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => _showEventDetails(event),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    DateFormat('HH:mm').format(event.startTime),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      event.stage,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Text(
+                      '${DateFormat('HH:mm').format(event.startTime)} - ${DateFormat('HH:mm').format(event.endTime)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  child: Icon(
+                    event.isFavorite ? Icons.star : Icons.star_border,
+                    key: ValueKey(event.isFavorite),
+                    color:
+                        event.isFavorite
+                            ? Theme.of(context).colorScheme.secondary
+                            : Colors.grey,
+                  ),
+                ),
+                onPressed: () => _toggleFavorite(event),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-      trailing: const Icon(Icons.arrow_forward_ios),
-      onTap: () => _showEventDetails(event),
     );
   }
 
   void _showEventDetails(Event event) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(event.title),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.event,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    event.title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDetailRow(Icons.location_on, 'Stage', event.stage),
+                SizedBox(height: 16),
+                _buildDetailRow(
+                  Icons.access_time,
+                  'Time',
+                  '${DateFormat('HH:mm').format(event.startTime)} - ${DateFormat('HH:mm').format(event.endTime)}',
+                ),
+              ],
+            ),
+            actions: [
+              TextButton.icon(
+                icon: Icon(event.isFavorite ? Icons.star : Icons.star_border),
+                label: Text(
+                  event.isFavorite
+                      ? 'Remove from favorites'
+                      : 'Add to favorites',
+                ),
+                onPressed: () {
+                  _toggleFavorite(event);
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Close'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Colors.grey),
+        SizedBox(width: 12),
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Stage: ${event.stage}'),
-            Text('Time: ${DateFormat('HH:mm').format(event.startTime)}'),
+            Text(label, style: TextStyle(color: Colors.grey, fontSize: 12)),
+            Text(
+              value,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

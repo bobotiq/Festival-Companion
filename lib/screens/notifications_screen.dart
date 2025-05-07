@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/notification.dart';
+import '../widgets/notification_card.dart';
 
 class NotificationsScreen extends StatefulWidget {
   @override
@@ -42,70 +43,77 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     });
   }
 
+  void _toggleNotificationRead(AppNotification notification) {
+    setState(() {
+      notification.isRead = !notification.isRead;
+    });
+  }
+
+  void _handleNotificationTap(AppNotification notification) {
+    // Add navigation based on notification type
+    switch (notification.type) {
+      case NotificationType.eventReminder:
+        Navigator.pushNamed(context, '/schedule');
+        break;
+      case NotificationType.friendActivity:
+        Navigator.pushNamed(context, '/friends');
+        break;
+      case NotificationType.system:
+        // Handle system notifications
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final unreadCount = _notifications.where((n) => !n.isRead).length;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: Text('Notifications ($unreadCount)'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.mark_email_read),
-            tooltip: "Mark all as read",
-            onPressed: _markAllAsRead,
-          ),
+          if (_notifications.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.mark_email_read),
+              tooltip: "Mark all as read",
+              onPressed: _markAllAsRead,
+            ),
         ],
       ),
-      body: _notifications.isEmpty
-          ? Center(child: Text('No notifications'))
-          : ListView.builder(
-              itemCount: _notifications.length,
-              itemBuilder: (context, index) => _NotificationItem(
-                notification: _notifications[index],
-                onDismiss: () => _dismissNotification(index),
-              ),
-            ),
-    );
-  }
-}
-
-class _NotificationItem extends StatelessWidget {
-  final AppNotification notification;
-  final VoidCallback onDismiss;
-
-  const _NotificationItem({
-    required this.notification,
-    required this.onDismiss,
-  });
-
-  Icon _getNotificationIcon() {
-    switch (notification.type) {
-      case NotificationType.friendActivity:
-        return const Icon(Icons.people, color: Colors.blue);
-      case NotificationType.eventReminder:
-        return const Icon(Icons.event, color: Colors.orange);
-      case NotificationType.system:
-        return const Icon(Icons.info, color: Colors.grey);
-    }
-    // No default needed; all enum cases are covered.
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(notification.id),
-      background: Container(color: Colors.red),
-      onDismissed: (_) => onDismiss(),
-      child: ListTile(
-        leading: _getNotificationIcon(),
-        title: Text(
-          notification.title,
-          style: TextStyle(
-            fontWeight: notification.isRead ? FontWeight.normal : FontWeight.bold,
-          ),
-        ),
-        trailing: notification.isRead
-            ? null
-            : Icon(Icons.circle, color: Theme.of(context).colorScheme.secondary, size: 12),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child:
+            _notifications.isEmpty
+                ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.notifications_none,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No notifications',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                )
+                : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: _notifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = _notifications[index];
+                    return NotificationCard(
+                      notification: notification,
+                      onDismiss: () => _dismissNotification(index),
+                      onTap: () => _handleNotificationTap(notification),
+                      onToggleRead: () => _toggleNotificationRead(notification),
+                    );
+                  },
+                ),
       ),
     );
   }

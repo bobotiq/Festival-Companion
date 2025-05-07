@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/event.dart';
+import '../widgets/event_card.dart';
 
 class ScheduleScreen extends StatefulWidget {
   @override
@@ -44,65 +46,33 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    if (events.isEmpty) {
-      return Center(
-        child: Text(
-          'No events scheduled.',
-          style: theme.textTheme.bodyLarge,
-        ),
-      );
-    }
-    return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      itemCount: events.length,
-      itemBuilder: (context, index) {
-        final event = events[index];
-        final isFavorite = favoriteEvents.contains(event["title"]);
-        return Card(
-          key: ValueKey(event["title"]),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 4,
-          margin: EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: theme.colorScheme.primary,
-              child: Text(
-                event["time"] ?? '',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            title: Text(
-              event["title"] ?? '',
-              style: theme.textTheme.titleLarge,
-            ),
-            subtitle: Text(
-              '${event["time"]} - ${event["stage"]}',
-              style: theme.textTheme.bodyMedium,
-            ),
-            trailing: IconButton(
-              icon: Icon(
-                isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
-                color: isFavorite ? theme.colorScheme.secondary : Colors.grey,
-              ),
-              onPressed: () => _toggleFavorite(event["title"]!),
-              tooltip: isFavorite ? 'Remove from favorites' : 'Add to favorites',
-            ),
+    return Scaffold(
+      body: ListView.builder(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          final event = Event(
+            id: index.toString(),
+            title: events[index]["title"] ?? "",
+            stage: events[index]["stage"] ?? "",
+            startTime: DateTime.now(), // Replace with actual time
+            endTime: DateTime.now().add(
+              Duration(hours: 2),
+            ), // Replace with actual time
+          );
+
+          return EventCard(
+            event: event,
+            onFavorite: () => _toggleFavorite(event.title),
             onTap: () {
+              // Handle event tap
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Details for "${event["title"]}" coming soon!'),
-                ),
+                SnackBar(content: Text('Selected: ${event.title}')),
               );
             },
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

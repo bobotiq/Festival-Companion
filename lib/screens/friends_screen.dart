@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/friend.dart';
-import '../widgets/profile_avatar.dart';
+import '../widgets/friend_list_item.dart';
 
 class FriendsScreen extends StatelessWidget {
-  // Example data as List<Map<String, String>>
   final List<Map<String, String>> data = [
     {
       'id': '1',
@@ -29,12 +28,12 @@ class FriendsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Convert the data to List<Friend>
-    final List<Friend> friends = data.map((map) => Friend.fromJson(map)).toList();
+    final List<Friend> friends =
+        data.map((map) => Friend.fromJson(map)).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
+        title: const Text('Friends'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -42,47 +41,42 @@ class FriendsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: friends.length,
-        separatorBuilder: (_, __) => const Divider(),
-        itemBuilder: (context, index) => _FriendListItem(friend: friends[index]),
-      ),
+      body:
+          friends.isEmpty
+              ? Center(
+                child: Text(
+                  'No friends found',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              )
+              : ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                itemCount: friends.length,
+                itemBuilder: (context, index) {
+                  return FriendListItem(
+                    friend: friends[index],
+                    onMessage: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Messaging ${friends[index].name}...'),
+                        ),
+                      );
+                    },
+                    onLocate: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Locating ${friends[index].name}...'),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
     );
   }
 
   void _showSearch(BuildContext context, List<Friend> friends) {
-    showSearch(
-      context: context,
-      delegate: _FriendSearchDelegate(friends),
-    );
-  }
-}
-
-class _FriendListItem extends StatelessWidget {
-  final Friend friend;
-
-  const _FriendListItem({required this.friend});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: ProfileAvatar(
-        imageUrl: friend.avatarUrl,
-        isOnline: friend.isOnline,
-      ),
-      title: Text(friend.name),
-      trailing: IconButton(
-        icon: const Icon(Icons.location_on),
-        onPressed: () => _showFriendLocation(context),
-      ),
-    );
-  }
-
-  void _showFriendLocation(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Location sharing coming soon for ${friend.name}!')),
-    );
+    showSearch(context: context, delegate: _FriendSearchDelegate(friends));
   }
 }
 
@@ -93,35 +87,58 @@ class _FriendSearchDelegate extends SearchDelegate<Friend?> {
 
   @override
   List<Widget> buildActions(BuildContext context) => [
-        IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: () => query = '',
-        ),
-      ];
+    IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
+  ];
 
   @override
-  Widget buildResults(BuildContext context) => _buildMatchingList(context);
+  Widget buildResults(BuildContext context) {
+    final results =
+        friends
+            .where((f) => f.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+
+    return results.isEmpty
+        ? Center(
+          child: Text(
+            'No friends found',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        )
+        : _buildMatchingList(context);
+  }
 
   @override
   Widget buildSuggestions(BuildContext context) => _buildMatchingList(context);
 
   Widget _buildMatchingList(BuildContext context) {
-    final results = friends
-        .where((f) => f.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    final results =
+        friends
+            .where((f) => f.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
     return ListView.builder(
       itemCount: results.length,
-      itemBuilder: (_, index) => ListTile(
-        leading: ProfileAvatar(imageUrl: results[index].avatarUrl),
-        title: Text(results[index].name),
-        onTap: () => close(context, results[index]),
-      ),
+      itemBuilder:
+          (_, index) => FriendListItem(
+            friend: results[index],
+            onMessage: () {
+              close(context, results[index]);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Messaging ${results[index].name}...')),
+              );
+            },
+            onLocate: () {
+              close(context, results[index]);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Locating ${results[index].name}...')),
+              );
+            },
+          ),
     );
   }
 
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => close(context, null),
-      );
+    icon: const Icon(Icons.arrow_back),
+    onPressed: () => close(context, null),
+  );
 }

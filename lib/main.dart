@@ -10,63 +10,57 @@ void main() => runApp(FestivalCompanionApp());
 class FestivalCompanionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Color(0xFF4A90E2);
-    final secondaryColor = Color(0xFF50E3C2);
-    final surfaceColor = Color(0xFFF5F7FA);
-
     return MaterialApp(
       title: 'Festival Companion',
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: primaryColor,
+          primary: Color(0xFF6200EE), // Deep purple for primary
+          secondary: Color(0xFF03DAC6), // Teal for secondary
+          surface: Color(0xFFF8F9FA), // Light gray surface
+          background: Color(0xFFFFFFFF), // Pure white background
+          error: Color(0xFFB00020), // Standard error color
           onPrimary: Colors.white,
-          secondary: secondaryColor,
-          onSecondary: Colors.white,
-          surface: surfaceColor,
-          onSurface: Colors.black87,
+          onSecondary: Colors.black,
+          onSurface: Color(0xFF1F1F1F),
+          onBackground: Color(0xFF1F1F1F),
+          onError: Colors.white,
         ),
-        scaffoldBackgroundColor: surfaceColor,
-        fontFamily: 'Roboto',
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 2,
-          centerTitle: true,
-          titleTextStyle: TextStyle(
-            fontSize: 22,
+        // Modern text styles
+        textTheme: TextTheme(
+          headlineLarge: TextStyle(
+            fontSize: 32,
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
-            letterSpacing: 0.5,
+            letterSpacing: -1.0,
           ),
-          iconTheme: IconThemeData(color: primaryColor),
-        ),
-        navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: Colors.white,
-          indicatorColor: primaryColor.withAlpha(32),
-          labelTextStyle: WidgetStatePropertyAll(
-            TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+          titleLarge: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.15,
           ),
-          iconTheme: WidgetStatePropertyAll(IconThemeData(color: primaryColor)),
+          bodyLarge: TextStyle(fontSize: 16, letterSpacing: 0.5, height: 1.5),
+          labelLarge: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1,
+          ),
         ),
+        // Modern card styling
         cardTheme: CardTheme(
-          elevation: 3,
+          elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          color: Colors.white,
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
-        textTheme: TextTheme(
-          titleLarge: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Colors.black87,
+        // Modern input decoration
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.grey[50],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
           ),
-          bodyLarge: TextStyle(fontSize: 16, color: Colors.black87),
-          bodyMedium: TextStyle(fontSize: 14, color: Colors.grey),
-          labelLarge: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: primaryColor,
-          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         useMaterial3: true,
       ),

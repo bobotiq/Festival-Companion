@@ -62,107 +62,226 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: ListView(
-          children: [
-            Center(
-              child: Column(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            floating: true,
+            expandedHeight: 160,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Welcome, $userName!',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge?.copyWith(fontSize: 26),
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
-                  const SizedBox(height: 8),
                   Text(
                     festivalName,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            _buildNextEventCard(context),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildNextEventSection(context),
+                const SizedBox(height: 24),
+                _buildQuickActionsGrid(context),
+                const SizedBox(height: 24),
+                _buildInfoSection(context),
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextEventSection(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.event, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'Next Event',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
             const SizedBox(height: 16),
-            _buildWeatherCard(context),
-            const SizedBox(height: 16),
-            _buildNotificationsCard(context),
-            const SizedBox(height: 16),
-            _buildFriendsCard(context),
+            Text(
+              nextEventTitle,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Starts in ${_formatDuration(_countdown)}',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNextEventCard(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.event, color: Colors.blue, size: 36),
-        title: const Text('Next Event'),
-        subtitle: Text(
-          '$nextEventTitle\nStarts in ${_formatDuration(_countdown)}',
+  Widget _buildQuickActionsGrid(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      children: [
+        _buildActionCard(
+          context,
+          Icons.map,
+          'Festival Map',
+          'View venue map',
+          () => Navigator.pushNamed(context, '/map'),
         ),
-        isThreeLine: true,
-        trailing: IconButton(
-          icon: const Icon(Icons.arrow_forward),
-          onPressed: () => Navigator.pushNamed(context, '/schedule'),
-          tooltip: 'Go to Schedule',
+        _buildActionCard(
+          context,
+          Icons.people,
+          'Friends',
+          '$friendsOnline online',
+          () => Navigator.pushNamed(context, '/friends'),
+        ),
+        _buildActionCard(
+          context,
+          Icons.notifications,
+          'Notifications',
+          '$unreadNotifications unread',
+          () => Navigator.pushNamed(context, '/notifications'),
+        ),
+        _buildActionCard(context, Icons.wb_sunny, 'Weather', weather, () {}),
+      ],
+    );
+  }
+
+  Widget _buildActionCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle,
+    VoidCallback onTap,
+  ) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 8),
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildWeatherCard(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.wb_sunny, color: Colors.orange, size: 36),
-        title: const Text('Weather'),
-        subtitle: Text(weather),
-        trailing: IconButton(
-          icon: const Icon(Icons.map),
-          onPressed: () => Navigator.pushNamed(context, '/map'),
-          tooltip: 'View Festival Map',
+  Widget _buildInfoSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          child: Text(
+            'Festival Information',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildNotificationsCard(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.notifications, color: Colors.red, size: 36),
-        title: const Text('Notifications'),
-        subtitle: Text('$unreadNotifications unread'),
-        trailing: IconButton(
-          icon: const Icon(Icons.arrow_forward),
-          onPressed: () => Navigator.pushNamed(context, '/notifications'),
-          tooltip: 'View Notifications',
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(
+                  Icons.schedule,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text('Festival Hours'),
+                subtitle: const Text('12:00 PM - 11:00 PM'),
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                onTap: () => Navigator.pushNamed(context, '/schedule'),
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.local_parking,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text('Parking Information'),
+                subtitle: const Text('Available spots: 250+'),
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                onTap: () {},
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.food_bank,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text('Food & Drinks'),
+                subtitle: const Text('20+ vendors available'),
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                onTap: () {},
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(
+                  Icons.medical_services,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text('Emergency Services'),
+                subtitle: const Text('First aid locations & contact info'),
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                onTap: () {},
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFriendsCard(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.people, color: Colors.green, size: 36),
-        title: const Text('Friends Online'),
-        subtitle: Text('$friendsOnline online'),
-        trailing: IconButton(
-          icon: const Icon(Icons.arrow_forward),
-          onPressed: () => Navigator.pushNamed(context, '/friends'),
-          tooltip: 'View Friends',
-        ),
-      ),
+      ],
     );
   }
 }
