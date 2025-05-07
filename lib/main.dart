@@ -86,20 +86,11 @@ class _MainScreenState extends State<MainScreen> {
     NotificationsScreen(),
   ];
 
-  static final List<String> _titles = [
-    'Home',
-    'Map',
-    'Schedule',
-    'Friends',
-    'Notifications',
-  ];
-
   void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_titles[_selectedIndex])),
       body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
