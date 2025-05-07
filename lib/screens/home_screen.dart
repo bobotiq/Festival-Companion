@@ -25,7 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _updateCountdown();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _updateCountdown());
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => _updateCountdown(),
+    );
   }
 
   void _updateCountdown() {
@@ -63,18 +66,28 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: ListView(
           children: [
-            Text(
-              'Welcome, $userName!',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 26),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              festivalName,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Welcome, $userName!',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(fontSize: 26),
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    festivalName,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
             _buildNextEventCard(context),
@@ -95,7 +108,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListTile(
         leading: const Icon(Icons.event, color: Colors.blue, size: 36),
         title: const Text('Next Event'),
-        subtitle: Text('$nextEventTitle\nStarts in ${_formatDuration(_countdown)}'),
+        subtitle: Text(
+          '$nextEventTitle\nStarts in ${_formatDuration(_countdown)}',
+        ),
         isThreeLine: true,
         trailing: IconButton(
           icon: const Icon(Icons.arrow_forward),

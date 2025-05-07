@@ -46,7 +46,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: const Text(''),
         actions: [
           IconButton(
             icon: const Icon(Icons.mark_email_read),

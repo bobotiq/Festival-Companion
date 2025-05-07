@@ -34,7 +34,7 @@ class FriendsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Friends'),
+        title: const Text(''),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),

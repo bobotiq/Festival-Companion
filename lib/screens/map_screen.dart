@@ -86,8 +86,7 @@ class _MapScreenState extends State<MapScreen> {
           infoWindow: InfoWindow(title: 'You are here'),
         ),
       },
-      // DO NOT set liteModeEnabled or set it to false
-      // liteModeEnabled: false, // not needed
+      // DO NOT turn on liteModeEnabled, as it will disable all gestures
       zoomGesturesEnabled: true,
       scrollGesturesEnabled: true,
       rotateGesturesEnabled: true,
