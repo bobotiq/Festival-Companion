@@ -48,6 +48,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     });
   }
 
+  /// TODO: Favorite event isn't being triggered correctly
+
   /// Handles toggling favorite status of an event
   /// Updates both local state and persistent storage
   Future<void> _toggleFavorite(String title) async {

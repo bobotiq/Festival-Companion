@@ -19,7 +19,7 @@ class FestivalCompanionApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Festival Companion',
-      // Configure Material 3 theme with custom color scheme
+      // Set the app theme using Material 3 design principles
       theme: ThemeData(
         colorScheme: ColorScheme.light(
           primary: Color(0xFF6200EE), // Main brand color

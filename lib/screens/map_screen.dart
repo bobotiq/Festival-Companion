@@ -61,6 +61,7 @@ class _MapScreenState extends State<MapScreen> {
       _currentPosition = await Geolocator.getCurrentPosition();
     } catch (e) {
       // Handle location error
+      // ignore: avoid_print
       print("Error getting location: $e");
     }
 

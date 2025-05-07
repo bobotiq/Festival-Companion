@@ -11,6 +11,7 @@ import '../widgets/friend_list_item.dart';
 
 class FriendsScreen extends StatelessWidget {
   /// Demo friend data
+  /// TODO: Use a different data source for avatars
   final List<Map<String, dynamic>> data = [
     {
       'id': '1',
