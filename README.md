@@ -1,6 +1,6 @@
 # Festival Companion
 
-Festival Companion is a mobile application designed as a high-quality proof-of-concept for enhancing the festival experience. The app features a simple and intuitive UI, offering functionality such as a festival map placeholder, a schedule list, a friends list, and a notifications feed.
+Festival Companion is a mobile application for improving a festival experience. The app features a festival map with real-time friends location updates, schedule list, friends list, and a notifications feed.
 
 ## Getting Started
 
